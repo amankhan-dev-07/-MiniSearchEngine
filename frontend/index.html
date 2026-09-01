@@ -1,0 +1,2649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ameja — Search</title>
+
+    <style>
+        :root {
+            --bg: #030712;
+            --bg-soft: #07101f;
+            --surface: rgba(8, 15, 31, 0.72);
+            --surface-strong: rgba(11, 20, 40, 0.92);
+            --text: #f5f7ff;
+            --muted: #9aa8c2;
+            --border: rgba(108, 135, 190, 0.24);
+            --primary: #4d8dff;
+            --primary-2: #7c3cff;
+            --green: #22e79a;
+            --shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
+        }
+
+        body.light {
+            --bg: #f6f8fc;
+            --bg-soft: #eef3fb;
+            --surface: rgba(255, 255, 255, 0.82);
+            --surface-strong: rgba(255, 255, 255, 0.96);
+            --text: #10182c;
+            --muted: #657089;
+            --border: rgba(55, 78, 120, 0.16);
+            --green: #07925b;
+            --shadow: 0 24px 70px rgba(40, 57, 90, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Inter, -apple-system, BlinkMacSystemFont,
+                         "Segoe UI", Arial, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(700px 420px at 8% 28%, rgba(38, 105, 255, .18), transparent 68%),
+                radial-gradient(650px 420px at 92% 30%, rgba(126, 45, 255, .16), transparent 68%),
+                radial-gradient(500px 320px at 50% 0%, rgba(20, 110, 255, .09), transparent 70%),
+                linear-gradient(180deg, var(--bg-soft), var(--bg));
+            transition: background .35s ease, color .25s ease;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: .22;
+            background-image:
+                linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+            background-size: 42px 42px;
+            mask-image: linear-gradient(to bottom, black, transparent 82%);
+        }
+
+        body.light::before {
+            opacity: .12;
+            background-image:
+                linear-gradient(rgba(45,70,120,.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(45,70,120,.035) 1px, transparent 1px);
+        }
+
+        /* NAVBAR */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            height: 74px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 4.5%;
+            background: rgba(3, 7, 18, .72);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+        }
+
+        body.light nav {
+            background: rgba(255,255,255,.72);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 21px;
+            font-weight: 800;
+            letter-spacing: -.7px;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            color: #78a6ff;
+            font-size: 21px;
+            background: linear-gradient(145deg, rgba(55, 91, 255, .28), rgba(121, 52, 255, .18));
+            border: 1px solid rgba(94, 135, 255, .28);
+            box-shadow: inset 0 1px rgba(255,255,255,.08), 0 8px 28px rgba(39,86,255,.16);
+        }
+
+        .brand-name {
+            background: linear-gradient(90deg, #ffffff 0%, #ffffff 55%, #6e88ff 78%, #8c45ff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .nav-pill {
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: rgba(255,255,255,.025);
+        }
+
+        .theme-button {
+            width: 46px;
+            height: 38px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: rgba(255,255,255,.025);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 17px;
+            transition: .2s ease;
+        }
+
+        .theme-button:hover {
+            transform: translateY(-1px);
+            border-color: rgba(105, 137, 255, .55);
+            box-shadow: 0 8px 25px rgba(52, 90, 255, .14);
+        }
+
+        /* HERO */
+        .hero {
+            position: relative;
+            max-width: 980px;
+            margin: 68px auto 0;
+            padding: 0 25px;
+            text-align: center;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            width: 760px;
+            height: 360px;
+            left: 50%;
+            top: -90px;
+            transform: translateX(-50%);
+            border: 1px solid rgba(77, 141, 255, .14);
+            border-radius: 50%;
+            box-shadow:
+                0 0 100px rgba(37, 99, 235, .08),
+                inset 0 0 80px rgba(124, 60, 255, .04);
+            pointer-events: none;
+        }
+
+        .hero h1 {
+            position: relative;
+            z-index: 1;
+            margin: 0;
+            font-size: clamp(70px, 8vw, 112px);
+            line-height: .95;
+            letter-spacing: -6px;
+            font-weight: 900;
+            text-shadow: 0 10px 45px rgba(65, 100, 255, .15);
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, #4e8cff 15%, #7d48ff 80%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .tagline {
+            position: relative;
+            z-index: 1;
+            margin: 24px 0 32px;
+            color: var(--muted);
+            font-size: 18px;
+        }
+
+        .tagline::before,
+        .tagline::after {
+            content: "";
+            display: inline-block;
+            width: 92px;
+            height: 1px;
+            margin: 0 18px 5px;
+            background: linear-gradient(90deg, transparent, #557cff);
+        }
+
+        .tagline::after {
+            background: linear-gradient(90deg, #8a50ff, transparent);
+        }
+
+        /* SEARCH */
+        .search-wrapper {
+            position: relative;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            padding: 7px;
+            background: rgba(4, 10, 24, .68);
+            border: 1px solid rgba(74, 145, 255, .78);
+            border-radius: 22px;
+            box-shadow:
+                0 0 0 1px rgba(124, 60, 255, .08),
+                0 18px 55px rgba(30, 88, 255, .12);
+            transition: .25s ease;
+        }
+
+        body.light .search-wrapper {
+            background: rgba(255,255,255,.86);
+        }
+
+        .search-wrapper::after {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(90deg, rgba(55,150,255,.85), rgba(124,60,255,.85));
+            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask-composite: exclude;
+            pointer-events: none;
+            opacity: .7;
+        }
+
+        .search-wrapper:focus-within {
+            transform: translateY(-2px);
+            box-shadow:
+                0 0 0 4px rgba(70, 126, 255, .08),
+                0 22px 65px rgba(45, 100, 255, .18);
+        }
+
+        .search-icon {
+            padding-left: 18px;
+            font-size: 23px;
+            color: #6191ff;
+        }
+
+        #searchInput {
+            flex: 1;
+            min-width: 0;
+            border: none;
+            outline: none;
+            background: transparent;
+            padding: 17px 14px;
+            font-size: 17px;
+            color: var(--text);
+        }
+
+        #searchInput::placeholder {
+            color: #75829d;
+        }
+
+        #searchButton {
+            border: none;
+            background: linear-gradient(135deg, #4a8cff, #713cff);
+            color: white;
+            min-width: 142px;
+            padding: 15px 25px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 750;
+            cursor: pointer;
+            box-shadow: 0 9px 26px rgba(74, 102, 255, .28);
+            transition: .2s ease;
+        }
+
+        #clearButton {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            margin-right: 6px;
+            border: 0;
+            border-radius: 10px;
+            background: transparent;
+            color: #8d9ab7;
+            font-size: 24px;
+            line-height: 1;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        #clearButton:hover {
+            color: #ffffff;
+            background: rgba(255,255,255,.08);
+        }
+
+        body.light #clearButton { color: #71809d; }
+        body.light #clearButton:hover {
+            color: #172033;
+            background: rgba(15,23,42,.06);
+        }
+
+        #searchButton:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 32px rgba(96, 72, 255, .38);
+            filter: brightness(1.06);
+        }
+
+        #searchButton:disabled {
+            opacity: .65;
+            cursor: wait;
+            transform: none;
+        }
+
+        /* AUTOCOMPLETE */
+        .autocomplete {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: none;
+            background: var(--surface-strong);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: 0 22px 65px rgba(0,0,0,.38);
+            overflow: hidden;
+            text-align: left;
+            backdrop-filter: blur(20px);
+        }
+
+        .autocomplete.show {
+            display: block;
+            animation: dropIn .16s ease;
+        }
+
+        @keyframes dropIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .autocomplete-item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 15px 18px;
+            border: none;
+            border-bottom: 1px solid rgba(100,120,170,.10);
+            background: transparent;
+            color: var(--text);
+            font-size: 14px;
+            cursor: pointer;
+            text-align: left;
+            transition: .16s ease;
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: 0;
+        }
+
+        .autocomplete-item:hover,
+        .autocomplete-item.active {
+            background: linear-gradient(90deg, rgba(67,130,255,.12), rgba(124,60,255,.08));
+            padding-left: 22px;
+        }
+
+        .autocomplete-item.active {
+            outline: none;
+        }
+
+        .autocomplete-icon {
+            width: 27px;
+            height: 27px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            color: #66a0ff;
+            background: rgba(77,141,255,.10);
+        }
+
+        /* RESULTS */
+        .results-area {
+            position: relative;
+            z-index: 5;
+            max-width: 965px;
+            margin: 34px auto 70px;
+            padding: 0 25px;
+        }
+
+        #status {
+            color: var(--muted);
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .result {
+            position: relative;
+            background: linear-gradient(145deg, rgba(10,18,36,.80), rgba(6,13,28,.68));
+            border: 1px solid var(--border);
+            border-radius: 19px;
+            padding: 24px 25px 22px;
+            margin-bottom: 14px;
+            box-shadow: 0 10px 34px rgba(0,0,0,.12);
+            backdrop-filter: blur(12px);
+            transition: .22s ease;
+            overflow: hidden;
+        }
+
+        body.light .result {
+            background: rgba(255,255,255,.78);
+        }
+
+        .result::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 180px;
+            height: 1px;
+            background: linear-gradient(90deg, #4b8dff, transparent);
+            opacity: .7;
+        }
+
+        .result:hover {
+            transform: translateY(-3px);
+            border-color: rgba(92, 139, 255, .42);
+            box-shadow: 0 18px 48px rgba(0,0,0,.25);
+        }
+
+        .result-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 7px;
+        }
+
+        .result-title a {
+            color: #f3f6ff;
+            text-decoration: none;
+        }
+
+        body.light .result-title a {
+            color: #183b89;
+        }
+
+        .result-title a:hover {
+            color: #72a1ff;
+        }
+
+        .url {
+            color: var(--green);
+            font-size: 13px;
+            margin-bottom: 11px;
+            word-break: break-all;
+        }
+
+        .snippet {
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .score {
+            display: inline-block;
+            margin-top: 13px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(94, 87, 255, .10);
+            border: 1px solid rgba(105, 91, 255, .12);
+            color: #9d8cff;
+            font-size: 11px;
+            font-weight: 650;
+        }
+
+        /* LOAD MORE */
+        .load-more-wrapper {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0 10px;
+        }
+
+        #loadMoreButton {
+            border: 1px solid rgba(95, 128, 205, .35);
+            background: rgba(255,255,255,.035);
+            color: #82a7ff;
+            padding: 13px 28px;
+            border-radius: 13px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        #loadMoreButton:hover {
+            transform: translateY(-2px);
+            border-color: rgba(104, 143, 255, .58);
+            background: rgba(76, 118, 255, .08);
+            box-shadow: 0 10px 30px rgba(47, 92, 255, .12);
+        }
+
+        #loadMoreButton:disabled {
+            opacity: .55;
+            cursor: wait;
+            transform: none;
+        }
+
+        /* LOADING */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: var(--muted);
+            padding: 20px;
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(120,145,200,.22);
+            border-top-color: var(--primary);
+            border-right-color: var(--primary-2);
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty {
+            text-align: center;
+            padding: 70px 20px;
+            color: var(--muted);
+        }
+
+        .empty-icon {
+            font-size: 42px;
+            margin-bottom: 14px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 42px 20px 55px;
+            color: #6f7b93;
+            font-size: 12px;
+        }
+
+
+
+        /* ANSWER ENGINE */
+        .answer-panel {
+            display: none;
+            max-width: 980px;
+            margin: 30px auto 0;
+            padding: 0 25px;
+            position: relative;
+            z-index: 8;
+        }
+
+        .answer-card {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(
+                145deg,
+                rgba(11, 22, 46, .94),
+                rgba(8, 15, 32, .90)
+            );
+            border: 1px solid rgba(95, 137, 255, .28);
+            border-radius: 22px;
+            padding: 24px 26px;
+            box-shadow:
+                0 18px 60px rgba(15, 63, 170, .14),
+                inset 0 1px rgba(255,255,255,.05);
+            backdrop-filter: blur(18px);
+            text-align: left;
+        }
+
+        .answer-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(
+                    circle at 100% 0%,
+                    rgba(94, 122, 255, .13),
+                    transparent 36%
+                );
+        }
+
+        body.light .answer-card {
+            background: rgba(255,255,255,.94);
+        }
+
+        .answer-topline {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+        .answer-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #8eacff;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        .answer-label .spark {
+            width: 24px;
+            height: 24px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            background: rgba(89,126,255,.12);
+            border: 1px solid rgba(108,141,255,.16);
+        }
+
+        .answer-badges {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            flex-wrap: wrap;
+        }
+
+        .answer-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 9px;
+            border-radius: 999px;
+            border: 1px solid rgba(120,140,190,.14);
+            background: rgba(120,140,190,.06);
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .answer-badge.confidence {
+            color: #8eaeff;
+            background: rgba(77,141,255,.08);
+            border-color: rgba(95,130,255,.16);
+        }
+
+        .answer-badge.language {
+            color: #69ddb0;
+            background: rgba(34,231,154,.06);
+            border-color: rgba(34,231,154,.12);
+        }
+
+        .answer-title {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 9px;
+            color: var(--text);
+            font-size: 20px;
+            font-weight: 850;
+            line-height: 1.25;
+        }
+
+        .answer-text {
+            position: relative;
+            z-index: 1;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.78;
+        }
+
+        .answer-divider {
+            position: relative;
+            z-index: 1;
+            height: 1px;
+            margin: 20px 0 15px;
+            background: rgba(115,135,180,.12);
+        }
+
+        .answer-sources-title {
+            position: relative;
+            z-index: 1;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 800;
+            margin-bottom: 9px;
+            letter-spacing: .2px;
+        }
+
+        .answer-sources {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .answer-source {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            max-width: 100%;
+            padding: 8px 11px;
+            border-radius: 11px;
+            text-decoration: none;
+            color: #b5c7ff;
+            background: rgba(86,120,220,.07);
+            border: 1px solid rgba(95,130,255,.14);
+            font-size: 11px;
+            font-weight: 750;
+            transition: transform .15s ease, border-color .15s ease, background .15s ease;
+        }
+
+        .answer-source:hover {
+            transform: translateY(-1px);
+            background: rgba(86,120,220,.11);
+            border-color: rgba(106,146,255,.28);
+        }
+
+        .answer-source .source-icon {
+            opacity: .8;
+        }
+
+        .answer-loading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .answer-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(130,150,200,.20);
+            border-top-color: #7d9dff;
+            border-radius: 50%;
+            animation: answerSpin .75s linear infinite;
+        }
+
+        @keyframes answerSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 700px) {
+            .answer-panel {
+                padding: 0 16px;
+                margin-top: 24px;
+            }
+
+            .answer-card {
+                padding: 20px 18px;
+            }
+
+            .answer-title {
+                font-size: 18px;
+            }
+
+            .answer-text {
+                font-size: 14px;
+                line-height: 1.7;
+            }
+        }
+
+        /* RECENT SEARCHES */
+        .recent-searches {
+            max-width: 980px;
+            margin: 18px auto 0;
+            padding: 0 25px;
+        }
+
+        .recent-panel {
+            display: none;
+            background: var(--surface-strong);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: 0 18px 55px rgba(0,0,0,.20);
+            backdrop-filter: blur(18px);
+            overflow: hidden;
+            text-align: left;
+        }
+
+        .recent-panel.show {
+            display: block;
+            animation: dropIn .16s ease;
+        }
+
+        .recent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 13px 16px;
+            border-bottom: 1px solid rgba(100,120,170,.10);
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .recent-clear {
+            border: 0;
+            background: transparent;
+            color: #7f8ca7;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .recent-clear:hover {
+            color: var(--text);
+        }
+
+        .recent-item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 16px;
+            border: 0;
+            border-bottom: 1px solid rgba(100,120,170,.08);
+            background: transparent;
+            color: var(--text);
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .recent-item:last-child {
+            border-bottom: 0;
+        }
+
+        .recent-item:hover {
+            background: linear-gradient(90deg, rgba(67,130,255,.10), rgba(124,60,255,.06));
+        }
+
+        .recent-icon {
+            width: 28px;
+            height: 28px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            background: rgba(77,141,255,.10);
+            color: #6da3ff;
+            flex: 0 0 auto;
+        }
+
+        @media (max-width: 700px) {
+            .recent-searches {
+                padding: 0 16px;
+            }
+        }
+
+        /* MOBILE */
+        @media (max-width: 700px) {
+            nav {
+                padding: 0 18px;
+                height: 68px;
+            }
+
+            .nav-pill {
+                display: none;
+            }
+
+            .brand {
+                font-size: 19px;
+            }
+
+            .brand-icon {
+                width: 38px;
+                height: 38px;
+            }
+
+            .hero {
+                margin-top: 58px;
+                padding: 0 16px;
+            }
+
+            .hero h1 {
+                font-size: 68px;
+                letter-spacing: -4px;
+            }
+
+            .tagline {
+                font-size: 15px;
+                margin: 19px 0 25px;
+            }
+
+            .tagline::before,
+            .tagline::after {
+                display: none;
+            }
+
+            .search-wrapper {
+                border-radius: 18px;
+            }
+
+            #searchInput {
+                padding: 15px 8px;
+                font-size: 15px;
+            }
+
+            #searchButton {
+                min-width: 96px;
+                padding: 13px 14px;
+                border-radius: 13px;
+            }
+
+            .results-area {
+                padding: 0 16px;
+                margin-top: 28px;
+            }
+
+            .result {
+                padding: 20px 18px;
+            }
+
+            .result-title {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         NAVBAR
+    ========================== -->
+
+    <nav>
+
+        <div class="brand">
+            <div class="brand-icon">⌕</div>
+            <span class="brand-name">Ameja</span>
+        </div>
+
+        <div class="nav-right">
+            <div class="nav-pill">✦ &nbsp; Lightweight Web Search</div>
+            <button
+                id="themeButton"
+                class="theme-button"
+                type="button"
+                title="Switch theme"
+                aria-label="Switch theme"
+            >☀️</button>
+        </div>
+
+    </nav>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main>
+
+        <section class="hero">
+
+            <h1>
+                Ame<span>ja</span>
+            </h1>
+
+            <p class="tagline">
+                A lightweight search engine built from scratch.
+            </p>
+
+
+            <!-- SEARCH -->
+
+            <div class="search-wrapper">
+
+                <div class="search-icon">
+                    ⌕
+                </div>
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search the web..."
+                    autocomplete="off"
+                >
+
+                <button
+                    id="clearButton"
+                    type="button"
+                    aria-label="Clear search"
+                    title="Clear search"
+                    onclick="clearSearch()"
+                >×</button>
+
+                <button
+                    id="searchButton"
+                    type="button"
+                    onclick="search()"
+                >
+                    Search
+                </button>
+
+
+                <!-- AUTOCOMPLETE -->
+
+                <div
+                    id="autocomplete"
+                    class="autocomplete"
+                ></div>
+
+            </div>
+
+        </section>
+
+        <section class="recent-searches">
+            <div id="recentPanel" class="recent-panel" aria-label="Recent searches">
+                <div class="recent-header">
+                    <span>Recent searches</span>
+                    <button id="clearRecentButton" class="recent-clear" type="button">Clear all</button>
+                </div>
+                <div id="recentList"></div>
+            </div>
+        </section>
+
+
+
+        <section
+            id="answerPanel"
+            class="answer-panel"
+            aria-live="polite"
+        >
+            <div id="answerCard" class="answer-card"></div>
+        </section>
+
+
+        <!-- =========================
+             RESULTS
+        ========================== -->
+
+        <section class="results-area">
+
+            <div id="status"></div>
+
+            <div id="results"></div>
+
+            <div
+                id="loadMoreWrapper"
+                class="load-more-wrapper"
+                style="display: none;"
+            >
+
+                <button
+                    id="loadMoreButton"
+                    type="button"
+                    onclick="loadMore()"
+                >
+                    Load More
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+        Ameja · Lightweight Search Engine · Built with Python &amp; FastAPI
+    </footer>
+
+
+    <script>
+
+        /* =================================================
+           STATE
+        ================================================= */
+
+        const PAGE_SIZE = 3;
+
+        let currentQuery = "";
+
+        let currentOffset = 0;
+
+        let hasMore = false;
+
+        let isLoading = false;
+
+        let suggestionTimer = null;
+        let answerRequestId = 0;
+        const RECENT_SEARCH_KEY = "ameja-recent-searches";
+        const MAX_RECENT_SEARCHES = 8;
+        let activeSuggestionIndex = -1;
+
+        // =========================
+        // AMEJA API / CONVERSATION
+        // =========================
+
+        const API_BASE = (
+            window.AMEJA_API_BASE
+            || "http://127.0.0.1:8000"
+        );
+
+        const SESSION_KEY =
+            "ameja-session-id";
+
+        let amejaSessionId =
+            localStorage.getItem(
+                SESSION_KEY
+            );
+
+        if (!amejaSessionId) {
+
+            amejaSessionId =
+                (
+                    window.crypto
+                    && typeof window.crypto.randomUUID === "function"
+                )
+                    ? window.crypto.randomUUID()
+                    : (
+                        Date.now().toString(36)
+                        + "-"
+                        + Math.random()
+                            .toString(36)
+                            .slice(2)
+                    );
+
+            localStorage.setItem(
+                SESSION_KEY,
+                amejaSessionId
+            );
+        }
+
+
+        /* =================================================
+           ELEMENTS
+        ================================================= */
+
+        const searchInput =
+            document.getElementById("searchInput");
+
+        const searchButton =
+            document.getElementById("searchButton");
+
+        const clearButton =
+            document.getElementById("clearButton");
+
+        const status =
+            document.getElementById("status");
+
+        const resultsContainer =
+            document.getElementById("results");
+
+        const loadMoreWrapper =
+            document.getElementById("loadMoreWrapper");
+
+        const loadMoreButton =
+            document.getElementById("loadMoreButton");
+
+        const autocomplete =
+            document.getElementById("autocomplete");
+
+        const answerPanel =
+            document.getElementById("answerPanel");
+
+        const answerCard =
+            document.getElementById("answerCard");
+
+        const recentPanel =
+            document.getElementById("recentPanel");
+
+        const recentList =
+            document.getElementById("recentList");
+
+        const clearRecentButton =
+            document.getElementById("clearRecentButton");
+
+
+
+        /* =================================================
+           RECENT SEARCHES
+        ================================================= */
+
+        function getRecentSearches() {
+
+            try {
+
+                const saved =
+                    JSON.parse(
+                        localStorage.getItem(
+                            RECENT_SEARCH_KEY
+                        ) || "[]"
+                    );
+
+                if (!Array.isArray(saved)) {
+                    return [];
+                }
+
+                return saved.filter(
+                    item =>
+                        typeof item === "string"
+                        && item.trim()
+                );
+
+            } catch (error) {
+
+                return [];
+
+            }
+
+        }
+
+
+        function saveRecentSearch(query) {
+
+            const clean =
+                query.trim();
+
+            if (!clean) {
+                return;
+            }
+
+            const recent =
+                getRecentSearches().filter(
+                    item =>
+                        item.toLowerCase()
+                        !== clean.toLowerCase()
+                );
+
+            recent.unshift(clean);
+
+            localStorage.setItem(
+                RECENT_SEARCH_KEY,
+                JSON.stringify(
+                    recent.slice(
+                        0,
+                        MAX_RECENT_SEARCHES
+                    )
+                )
+            );
+
+            renderRecentSearches();
+
+        }
+
+
+        function renderRecentSearches() {
+
+            const recent =
+                getRecentSearches();
+
+            recentList.innerHTML =
+                recent.map(
+                    function(item) {
+
+                        return `
+                            <button
+                                class="recent-item"
+                                type="button"
+                                data-query="${escapeHTML(item)}"
+                            >
+                                <span class="recent-icon">↗</span>
+                                <span>${escapeHTML(item)}</span>
+                            </button>
+                        `;
+
+                    }
+                ).join("");
+
+            recentList
+                .querySelectorAll(
+                    ".recent-item"
+                )
+                .forEach(
+                    function(button) {
+
+                        button.addEventListener(
+                            "click",
+                            function(event) {
+
+                                event.preventDefault();
+                                event.stopPropagation();
+
+                                const query =
+                                    button.dataset.query || "";
+
+                                hideRecentSearches();
+
+                                search(query);
+
+                            }
+                        );
+
+                    }
+                );
+
+        }
+
+
+        function showRecentSearches() {
+
+            hideAutocomplete();
+            renderRecentSearches();
+
+            if (getRecentSearches().length) {
+
+                recentPanel.classList.add(
+                    "show"
+                );
+
+            }
+
+        }
+
+
+        function hideRecentSearches() {
+
+            recentPanel.classList.remove(
+                "show"
+            );
+
+        }
+
+
+        function clearRecentSearches() {
+
+            localStorage.removeItem(
+                RECENT_SEARCH_KEY
+            );
+
+            renderRecentSearches();
+            hideRecentSearches();
+
+        }
+
+
+        clearRecentButton.addEventListener(
+            "click",
+            function(event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                clearRecentSearches();
+
+            }
+        );
+
+
+        renderRecentSearches();
+
+
+        async function checkAmejaHealth() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        API_BASE
+                        + "/health"
+                    );
+
+                if (!response.ok) {
+                    throw new Error(
+                        `HTTP ${response.status}`
+                    );
+                }
+
+                console.log(
+                    "AMEJA API online."
+                );
+
+            } catch (error) {
+
+                console.warn(
+                    "AMEJA API is offline. Start FastAPI on port 8000.",
+                    error
+                );
+
+            }
+        }
+
+        checkAmejaHealth();
+
+
+        /* =================================================
+           CLEAR SEARCH
+        ================================================= */
+
+        function updateClearButton() {
+            clearButton.style.display =
+                searchInput.value.trim() ? "flex" : "none";
+        }
+
+        function clearSearch() {
+            searchInput.value = "";
+            currentQuery = "";
+            currentOffset = 0;
+            hasMore = false;
+            isLoading = false;
+            hideAutocomplete();
+            resultsContainer.innerHTML = "";
+            status.innerHTML = "";
+            answerPanel.style.display = "none";
+            answerCard.innerHTML = "";
+            loadMoreWrapper.style.display = "none";
+            searchButton.disabled = false;
+            updateClearButton();
+            searchInput.focus();
+        }
+
+
+        /* =================================================
+           SEARCH
+        ================================================= */
+
+        async function search(queryOverride = null) {
+
+            const query =
+                queryOverride !== null
+                    ? queryOverride.trim()
+                    : searchInput.value.trim();
+
+
+            if (!query) {
+
+                status.textContent =
+                    "Type something to search.";
+
+                resultsContainer.innerHTML = "";
+
+                loadMoreWrapper.style.display = "none";
+
+                answerPanel.style.display = "none";
+                answerCard.innerHTML = "";
+
+                hideAutocomplete();
+
+                return;
+            }
+
+
+            saveRecentSearch(query);
+            hideRecentSearches();
+
+            currentQuery = query;
+
+            currentOffset = 0;
+
+            hasMore = false;
+
+            // Start the Answer Engine independently of the result list.
+            // Keeping this outside fetchResults prevents the answer card
+            // from depending on search-result rendering order.
+            fetchAnswer(currentQuery);
+
+
+            searchInput.value = query;
+            updateClearButton();
+
+            hideAutocomplete();
+
+
+            resultsContainer.innerHTML = "";
+
+            loadMoreWrapper.style.display = "none";
+
+
+            status.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Searching Ameja...
+                </div>
+            `;
+
+
+            searchButton.disabled = true;
+
+
+            try {
+
+                const data =
+                    await fetchResults(
+                        currentQuery,
+                        currentOffset
+                    );
+
+
+                if (
+                    currentQuery !==
+                    searchInput.value.trim()
+                ) {
+                    return;
+                }
+
+
+                if (
+                    !data.results ||
+                    data.results.length === 0
+                ) {
+
+                    status.textContent =
+                        `No results found for "${data.query}"`;
+
+                    resultsContainer.innerHTML = `
+                        <div class="empty">
+
+                            <div class="empty-icon">
+                                🔎
+                            </div>
+
+                            <strong>
+                                No results found
+                            </strong>
+
+                            <br>
+
+                            Try a different search query.
+
+                        </div>
+                    `;
+
+                    loadMoreWrapper.style.display =
+                        "none";
+
+                    return;
+                }
+
+
+                renderResults(
+                    data.results,
+                    false
+                );
+
+
+                currentOffset +=
+                    data.results.length;
+
+
+                hasMore =
+                    Boolean(data.has_more);
+
+
+                updateStatus(
+                    data.total_results,
+                    currentOffset
+                );
+
+
+                updateLoadMoreButton();
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Search error:",
+                    error
+                );
+
+
+                status.textContent =
+                    "Unable to complete the search.";
+
+
+                resultsContainer.innerHTML = `
+                    <div class="empty">
+
+                        <div class="empty-icon">
+                            ⚠
+                        </div>
+
+                        <strong>
+                            Search unavailable
+                        </strong>
+
+                        <br>
+
+                        Please make sure the Ameja server is running.
+
+                    </div>
+                `;
+
+
+                loadMoreWrapper.style.display =
+                    "none";
+
+            }
+
+            finally {
+
+                searchButton.disabled = false;
+
+            }
+
+        }
+
+
+
+        searchInput.addEventListener(
+            "focus",
+            function() {
+
+                if (!searchInput.value.trim()) {
+                    showRecentSearches();
+                }
+
+            }
+        );
+
+
+
+        /* =================================================
+           ANSWER ENGINE
+        ================================================= */
+
+        async function fetchAnswer(query) {
+
+            const requestId =
+                ++answerRequestId;
+
+            if (!query) {
+                answerPanel.style.display = "none";
+                return;
+            }
+
+            try {
+
+                answerPanel.style.display = "block";
+
+                answerCard.innerHTML = `
+                    <div class="answer-loading">
+                        <span class="answer-spinner"></span>
+                        <span>AMEJA is preparing an answer...</span>
+                    </div>
+                `;
+
+                const url =
+                    API_BASE
+                    + "/answer?q="
+                    + encodeURIComponent(query)
+                    + "&session_id="
+                    + encodeURIComponent(
+                        amejaSessionId
+                    );
+
+                const response =
+                    await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(
+                        `HTTP ${response.status}`
+                    );
+                }
+
+                const data =
+                    await response.json();
+
+                if (
+                    requestId !== answerRequestId
+                    || currentQuery !== query
+                ) {
+                    return;
+                }
+
+                if (!data.answer) {
+                    answerPanel.style.display = "none";
+                    answerCard.innerHTML = `
+                        <div class="answer-text">
+                            No reliable answer found.
+                        </div>
+                    `;
+                    return;
+                }
+
+                const sources =
+                    Array.isArray(data.sources)
+                        ? data.sources.slice(0, 5)
+                        : [];
+
+                const languageLabel =
+                    data.answer_language === "hinglish"
+                        ? "Hinglish"
+                        : "English";
+
+                const questionType =
+                    data.question_type
+                    || "answer";
+
+                const sourceLabel =
+                    String(
+                        data.answer_source
+                        || "source"
+                    )
+                    .replace(
+                        /^ameja_/i,
+                        ""
+                    );
+
+                const contextBadge =
+                    data.context_used
+                        ? `
+                            <span class="answer-badge">
+                                ◌ Context
+                            </span>
+                          `
+                        : "";
+
+                answerCard.innerHTML = `
+                    <div class="answer-topline">
+
+                        <div class="answer-label">
+                            <span class="spark">✦</span>
+                            <span>AMEJA Answer</span>
+                        </div>
+
+                        <div class="answer-badges">
+
+                            <span class="answer-badge language">
+                                ● ${escapeHTML(languageLabel)}
+                            </span>
+
+                            <span class="answer-badge">
+                                ${escapeHTML(questionType)}
+                            </span>
+
+                            <span class="answer-badge confidence">
+                                ${escapeHTML(
+                                    String(
+                                        data.confidence
+                                        ?? 0
+                                    )
+                                )}% confidence
+                            </span>
+
+                            <span class="answer-badge">
+                                ${escapeHTML(sourceLabel)}
+                            </span>
+
+                            ${contextBadge}
+
+                        </div>
+
+                    </div>
+
+                    <div class="answer-title">
+                        ${escapeHTML(
+                            data.title
+                            || "AMEJA"
+                        )}
+                    </div>
+
+                    <div class="answer-text">
+                        ${escapeHTML(
+                            data.answer
+                        )}
+                    </div>
+
+                    ${
+                        data.resolved_query
+                            ? `
+                                <div class="answer-badge"
+                                     style="margin-top:12px;">
+                                    Resolved: ${escapeHTML(
+                                        data.resolved_query
+                                    )}
+                                </div>
+                              `
+                            : ""
+                    }
+
+                    ${
+                        sources.length
+                            ? `
+                                <div class="answer-divider"></div>
+
+                                <div class="answer-sources-title">
+                                    Sources
+                                </div>
+
+                                <div class="answer-sources">
+                                    ${
+                                        sources.map(
+                                            function(source) {
+
+                                                return `
+                                                    <a
+                                                        class="answer-source"
+                                                        href="${escapeHTML(
+                                                            source.url
+                                                            || "#"
+                                                        )}"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        title="${escapeHTML(
+                                                            source.url
+                                                            || ""
+                                                        )}"
+                                                    >
+                                                        <span class="source-icon">
+                                                            ↗
+                                                        </span>
+                                                        <span>
+                                                            ${escapeHTML(
+                                                                source.title
+                                                                || "Source"
+                                                            )}
+                                                        </span>
+                                                    </a>
+                                                `;
+
+                                            }
+                                        ).join("")
+                                    }
+                                </div>
+                              `
+                            : ""
+                    }
+                `;
+
+                answerPanel.style.display =
+                    "block";
+
+            } catch (error) {
+
+                console.error(
+                    "Answer error:",
+                    error
+                );
+
+                answerCard.innerHTML = `
+                    <div class="answer-text">
+                        Unable to reach AMEJA.
+                        Make sure the FastAPI server is running on port 8000.
+                    </div>
+                `;
+
+                answerPanel.style.display =
+                    "block";
+            }
+        }
+
+
+
+        /* =================================================
+           FETCH RESULTS
+        ================================================= */
+
+        async function fetchResults(
+            query,
+            offset
+        ) {
+
+            const url =
+                API_BASE
+                + "/search?q="
+                + encodeURIComponent(query);
+
+            const response =
+                await fetch(url);
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `HTTP ${response.status}`
+                );
+            }
+
+            const data =
+                await response.json();
+
+            const allResults =
+                Array.isArray(
+                    data.results
+                )
+                    ? data.results
+                    : [];
+
+            const pageResults =
+                allResults.slice(
+                    offset,
+                    offset + PAGE_SIZE
+                );
+
+            return {
+                query: data.query || query,
+                results: pageResults,
+                total_results: allResults.length,
+                has_more:
+                    offset + PAGE_SIZE
+                    < allResults.length
+            };
+        }
+
+
+
+        /* =================================================
+           LOAD MORE
+        ================================================= */
+
+        async function loadMore() {
+
+            if (
+                isLoading ||
+                !hasMore ||
+                !currentQuery
+            ) {
+                return;
+            }
+
+
+            isLoading = true;
+
+            loadMoreButton.disabled = true;
+
+            loadMoreButton.textContent =
+                "Loading...";
+
+
+            try {
+
+                const data =
+                    await fetchResults(
+                        currentQuery,
+                        currentOffset
+                    );
+
+
+                renderResults(
+                    data.results || [],
+                    true
+                );
+
+
+                currentOffset +=
+                    (data.results || []).length;
+
+
+                hasMore =
+                    Boolean(data.has_more);
+
+
+                updateStatus(
+                    data.total_results,
+                    currentOffset
+                );
+
+
+                updateLoadMoreButton();
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Load more error:",
+                    error
+                );
+
+
+                loadMoreButton.disabled =
+                    false;
+
+                loadMoreButton.textContent =
+                    "Try Again";
+
+            }
+
+            finally {
+
+                isLoading = false;
+
+            }
+
+        }
+
+
+        /* =================================================
+           RENDER RESULTS
+        ================================================= */
+
+        function renderResults(
+            results,
+            append
+        ) {
+
+            if (!append) {
+
+                resultsContainer.innerHTML = "";
+
+            }
+
+
+            results.forEach(
+                function(result) {
+
+                    const resultDiv =
+                        document.createElement(
+                            "article"
+                        );
+
+
+                    resultDiv.className =
+                        "result";
+
+
+                    resultDiv.innerHTML = `
+
+                        <div class="result-title">
+
+                            <a
+                                href="${escapeHTML(result.url)}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                ${escapeHTML(
+                                    result.title ||
+                                    "Untitled"
+                                )}
+                            </a>
+
+                        </div>
+
+
+                        <div class="url">
+
+                            ${escapeHTML(
+                                result.url
+                            )}
+
+                        </div>
+
+
+                        <div class="snippet">
+
+                            ${escapeHTML(
+                                result.snippet ||
+                                ""
+                            )}
+
+                        </div>
+
+
+                        <div class="score">
+
+                            Relevance
+                            ${escapeHTML(
+                                String(
+                                    result.score ??
+                                    ""
+                                )
+                            )}
+
+                        </div>
+
+                    `;
+
+
+                    resultsContainer.appendChild(
+                        resultDiv
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =================================================
+           STATUS
+        ================================================= */
+
+        function updateStatus(
+            totalResults,
+            displayedResults
+        ) {
+
+            if (
+                hasMore
+            ) {
+
+                status.textContent =
+                    `Showing ${displayedResults} of ${totalResults} results for "${currentQuery}"`;
+
+            }
+
+            else {
+
+                status.textContent =
+                    `Showing ${displayedResults} of ${totalResults} results for "${currentQuery}"`;
+
+            }
+
+        }
+
+
+        /* =================================================
+           LOAD MORE BUTTON
+        ================================================= */
+
+        function updateLoadMoreButton() {
+
+            if (hasMore) {
+
+                loadMoreWrapper.style.display =
+                    "flex";
+
+                loadMoreButton.style.display =
+                    "inline-block";
+
+                loadMoreButton.disabled =
+                    false;
+
+                loadMoreButton.textContent =
+                    "Load More";
+
+            }
+
+            else {
+
+                loadMoreWrapper.style.display =
+                    "none";
+
+            }
+
+        }
+
+
+        /* =================================================
+           AUTOCOMPLETE
+        ================================================= */
+
+        searchInput.addEventListener(
+            "input",
+            function() {
+
+                const query =
+                    searchInput.value.trim();
+
+
+                hideAutocomplete();
+
+
+                if (!query || query.length < 1) {
+                    return;
+                }
+
+
+                clearTimeout(
+                    suggestionTimer
+                );
+
+
+                suggestionTimer =
+                    setTimeout(
+                        function() {
+
+                            fetchSuggestions(
+                                query
+                            );
+
+                        },
+                        180
+                    );
+
+            }
+        );
+
+
+        async function fetchSuggestions(
+            query
+        ) {
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_BASE}/suggest?q=${encodeURIComponent(query)}`
+                    );
+
+
+                if (!response.ok) {
+                    return;
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    searchInput.value.trim()
+                    !== query
+                ) {
+                    return;
+                }
+
+
+                let suggestions =
+                    Array.isArray(
+                        data.suggestions
+                    )
+                        ? data.suggestions
+                        : [];
+
+
+                suggestions =
+                    [
+                        ...new Set(
+                            suggestions
+                                .map(
+                                    item =>
+                                        String(
+                                            item
+                                        ).trim()
+                                )
+                                .filter(Boolean)
+                        )
+                    ].slice(0, 6);
+
+
+                if (
+                    !suggestions.length
+                ) {
+
+                    return;
+
+                }
+
+
+                showAutocomplete(
+                    suggestions
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Suggestion error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        function showAutocomplete(
+            suggestions
+        ) {
+
+            activeSuggestionIndex = -1;
+
+            autocomplete.innerHTML =
+                suggestions
+                    .map(
+                        function(suggestion, index) {
+
+                            return `
+
+                                <button
+                                    type="button"
+                                    class="autocomplete-item"
+                                    data-suggestion="${escapeHTML(suggestion)}"
+                                    data-index="${index}"
+                                >
+
+                                    <span class="autocomplete-icon">
+                                        🔍
+                                    </span>
+
+                                    <span>
+                                        ${escapeHTML(
+                                            suggestion
+                                        )}
+                                    </span>
+
+                                </button>
+
+                            `;
+
+                        }
+                    )
+                    .join("");
+
+
+            autocomplete.classList.add(
+                "show"
+            );
+
+            autocomplete
+                .querySelectorAll(".autocomplete-item")
+                .forEach(
+                    function(button) {
+
+                        button.addEventListener(
+                            "mousedown",
+                            function(event) {
+                                event.preventDefault();
+                            }
+                        );
+
+                        button.addEventListener(
+                            "click",
+                            function(event) {
+
+                                event.preventDefault();
+                                event.stopPropagation();
+
+                                selectSuggestion(
+                                    button.dataset.suggestion
+                                );
+                            }
+                        );
+
+                    }
+                );
+
+        }
+
+
+        function selectSuggestion(
+            suggestion
+        ) {
+
+            clearTimeout(
+                suggestionTimer
+            );
+
+            searchInput.value =
+                suggestion;
+
+            updateClearButton();
+            hideAutocomplete();
+
+            search(
+                suggestion
+            );
+
+        }
+
+
+        function hideAutocomplete() {
+
+            autocomplete.classList.remove(
+                "show"
+            );
+
+            autocomplete.innerHTML = "";
+            activeSuggestionIndex = -1;
+
+        }
+
+        function updateActiveSuggestion(index) {
+
+            const items =
+                Array.from(
+                    autocomplete.querySelectorAll(
+                        ".autocomplete-item"
+                    )
+                );
+
+            if (!items.length) {
+                activeSuggestionIndex = -1;
+                return;
+            }
+
+            activeSuggestionIndex =
+                Math.max(
+                    -1,
+                    Math.min(
+                        index,
+                        items.length - 1
+                    )
+                );
+
+            items.forEach(
+                function(item, itemIndex) {
+
+                    item.classList.toggle(
+                        "active",
+                        itemIndex === activeSuggestionIndex
+                    );
+
+                }
+            );
+
+            if (
+                activeSuggestionIndex >= 0
+            ) {
+
+                items[
+                    activeSuggestionIndex
+                ].scrollIntoView({
+                    block: "nearest"
+                });
+
+            }
+
+        }
+
+
+        /* =================================================
+           ESCAPE HTML
+        ================================================= */
+
+        function escapeHTML(
+            text
+        ) {
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.textContent =
+                text;
+
+
+            return div.innerHTML;
+
+        }
+
+
+        /* =================================================
+           ENTER KEY
+        ================================================= */
+
+        searchInput.addEventListener(
+            "input",
+            function () {
+                updateClearButton();
+            }
+        );
+
+        searchInput.addEventListener(
+            "keydown",
+            function(event) {
+
+                const items =
+                    autocomplete.querySelectorAll(
+                        ".autocomplete-item"
+                    );
+
+                if (
+                    event.key === "ArrowDown"
+                    && items.length
+                ) {
+
+                    event.preventDefault();
+
+                    updateActiveSuggestion(
+                        activeSuggestionIndex + 1
+                    );
+
+                    return;
+                }
+
+                if (
+                    event.key === "ArrowUp"
+                    && items.length
+                ) {
+
+                    event.preventDefault();
+
+                    updateActiveSuggestion(
+                        activeSuggestionIndex - 1
+                    );
+
+                    return;
+                }
+
+                if (
+                    event.key === "Escape"
+                ) {
+
+                    if (
+                        autocomplete.classList.contains(
+                            "show"
+                        )
+                    ) {
+
+                        event.preventDefault();
+                        hideAutocomplete();
+
+                    }
+
+                    return;
+                }
+
+                if (
+                    event.key === "Enter"
+                ) {
+
+                    event.preventDefault();
+
+                    if (
+                        activeSuggestionIndex >= 0
+                        && items[activeSuggestionIndex]
+                    ) {
+
+                        selectSuggestion(
+                            items[
+                                activeSuggestionIndex
+                            ].dataset.suggestion
+                        );
+
+                        return;
+                    }
+
+                    search();
+
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           CLICK OUTSIDE
+        ================================================= */
+
+        document.addEventListener(
+            "click",
+            function(event) {
+
+                if (
+                    !event.target.closest(
+                        ".search-wrapper"
+                    )
+                ) {
+
+                    hideAutocomplete();
+                    hideRecentSearches();
+
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           URL SEARCH
+        ================================================= */
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const initialQuery =
+            params.get("q");
+
+
+        if (initialQuery) {
+
+            searchInput.value =
+                initialQuery;
+
+            search(
+                initialQuery
+            );
+
+        }
+
+        /* =================================================
+           PREMIUM THEME
+        ================================================= */
+
+        const themeButton =
+            document.getElementById("themeButton");
+
+        function applyTheme(theme) {
+            const isLight = theme === "light";
+
+            document.body.classList.toggle(
+                "light",
+                isLight
+            );
+
+            themeButton.textContent =
+                isLight ? "🌙" : "☀️";
+
+            themeButton.title =
+                isLight
+                    ? "Switch to dark mode"
+                    : "Switch to light mode";
+        }
+
+        const savedTheme =
+            localStorage.getItem("ameja-theme") || "dark";
+
+        applyTheme(savedTheme);
+
+        themeButton.addEventListener(
+            "click",
+            function () {
+                const isLight =
+                    document.body.classList.contains("light");
+
+                const newTheme =
+                    isLight ? "dark" : "light";
+
+                localStorage.setItem(
+                    "ameja-theme",
+                    newTheme
+                );
+
+                applyTheme(newTheme);
+            }
+        );
+
+        /* =================================================
+           URL + THEME SAFE INITIALIZATION
+        ================================================= */
+
+    </script>
+
+</body>
+</html>

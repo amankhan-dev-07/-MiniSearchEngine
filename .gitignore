@@ -1,0 +1,32 @@
+.venv/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+.DS_Store
+
+# Project backups
+app/**/*_backup*.py
+app/**/*backup*.py
+frontend/**/*_backup*
+frontend/**/*backup*
+
+# Virtual environments
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Environment/secrets
+.env
+.env.*
+
+# OS
+.DS_Store
+
+# Project backups
+**/*backup*
+**/*backup*.py
+**/*backup*.html
+**/*_backup*
