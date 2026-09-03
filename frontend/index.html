@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -947,6 +947,545 @@
                 font-size: 18px;
             }
         }
+                /* =========================
+           QUICK LINKS
+        ========================== */
+
+        .quick-links-section {
+    width: 100%;
+    max-width: 620px;
+    margin: 8px auto 22px;
+    padding: 0 16px;
+}
+
+.quick-links-panel {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    padding: 0;
+}
+
+.quick-links-header {
+    display: none;
+}
+
+.quick-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+}
+
+.quick-link {
+    width: 110px;
+    height: 82px;
+    min-height: 82px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 10px 8px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface-strong);
+    color: var(--text);
+    text-decoration: none;
+    transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        background 0.18s ease;
+}
+.quick-link-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: var(--bg-soft);
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 700;
+}
+.quick-link > span:last-child {
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+        /* TABLET */
+
+        @media (max-width: 900px) {
+
+            .quick-links {
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+            }
+
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 700px) {
+
+    .quick-links-section {
+        max-width: 100%;
+        margin: 6px auto 18px;
+        padding: 0 12px;
+    }
+
+    .quick-links {
+        gap: 8px;
+        justify-content: center;
+    }
+
+    .quick-link {
+    width: 82px;
+    height: 72px;
+    min-height: 72px;
+    padding: 8px 5px;
+    border-radius: 14px;
+}
+   .quick-link-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+}
+    .quick-link > span:last-child {
+    font-size: 11px;
+}
+}
+        /* VERY SMALL PHONES */
+
+        @media (max-width: 380px) {
+
+            .quick-links-section {
+                padding: 0 12px;
+            }
+
+            .quick-links-panel {
+                padding: 13px;
+            }
+
+            .quick-link {
+                flex-basis: 62px;
+                width: 62px;
+            }
+
+        }
+                /* =========================
+           WEBSITE SEARCH RESULT
+        ========================== */
+
+        .website-result {
+            width: 100%;
+            max-width: 965px;
+            margin: 18px auto 0;
+            padding: 0 25px;
+        }
+
+        .website-result:empty {
+            display: none;
+        }
+
+        .website-result-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 15px 16px;
+            border: 1px solid rgba(95, 137, 255, .22);
+            border-radius: 16px;
+            background: var(--surface);
+            box-shadow: 0 12px 34px rgba(0,0,0,.14);
+            backdrop-filter: blur(14px);
+        }
+
+        .website-result-icon {
+            width: 42px;
+            height: 42px;
+            flex: 0 0 42px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: rgba(77,141,255,.10);
+            color: #82a7ff;
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .website-result-info {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .website-result-label {
+            margin-bottom: 3px;
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .website-result-name {
+            color: var(--text);
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .website-result-url {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 11px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .website-result-open {
+            flex: 0 0 auto;
+            padding: 9px 15px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #4a8cff, #713cff);
+            color: white;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 800;
+            box-shadow: 0 8px 22px rgba(74, 102, 255, .20);
+        }
+
+        .website-result-open:hover {
+            filter: brightness(1.06);
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 700px) {
+            .website-result {
+                max-width: 100%;
+                margin-top: 14px;
+                padding: 0 16px;
+            }
+
+            .website-result-card {
+                gap: 10px;
+                padding: 12px;
+                border-radius: 14px;
+            }
+
+            .website-result-icon {
+                width: 36px;
+                height: 36px;
+                flex-basis: 36px;
+                border-radius: 10px;
+                font-size: 14px;
+            }
+
+            .website-result-name {
+                font-size: 14px;
+            }
+
+            .website-result-url {
+                font-size: 9px;
+            }
+
+            .website-result-open {
+                padding: 8px 10px;
+                font-size: 11px;
+            }
+        }
+        /* =====================================================
+   AMEJA FINAL MOBILE COMPACT FIX
+   ===================================================== */
+
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+img,
+svg,
+video,
+canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+main,
+section,
+nav,
+footer,
+.hero,
+.search-wrapper,
+.quick-links-section,
+.results-area,
+.answer-panel,
+.recent-searches,
+.website-result {
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* -------------------------
+   PHONE
+   ------------------------- */
+
+@media (max-width: 700px) {
+
+    nav {
+        width: 100%;
+        height: 58px;
+        padding: 0 12px;
+    }
+
+    .brand {
+        gap: 7px;
+        font-size: 17px;
+    }
+
+    .brand-icon {
+        width: 34px;
+        height: 34px;
+        font-size: 17px;
+    }
+
+    .nav-pill {
+        display: none;
+    }
+
+    .theme-button {
+        width: 38px;
+        height: 34px;
+        padding: 0;
+    }
+
+    main {
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+    .hero {
+        width: 100%;
+        max-width: 100%;
+        margin: 30px 0 0;
+        padding: 0 12px;
+    }
+
+    .hero h1 {
+        font-size: clamp(48px, 16vw, 64px);
+        line-height: 1;
+        letter-spacing: -3px;
+        margin: 0;
+    }
+
+    .tagline {
+        font-size: 12px;
+        line-height: 1.4;
+        margin: 12px 0 18px;
+        white-space: nowrap;
+    }
+
+    /* SEARCH BAR */
+    .search-wrapper {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+
+        display: flex;
+        align-items: center;
+
+        padding: 4px;
+        gap: 2px;
+
+        border-radius: 15px;
+    }
+
+    .search-icon {
+        flex: 0 0 25px;
+        width: 25px;
+        padding-left: 5px;
+        font-size: 17px;
+    }
+
+    #searchInput {
+        flex: 1 1 auto;
+        width: 0;
+        min-width: 0;
+        max-width: none;
+
+        padding: 10px 4px;
+        font-size: 14px;
+    }
+
+    #clearButton {
+        flex: 0 0 26px;
+        width: 26px;
+        height: 26px;
+        margin: 0;
+        padding: 0;
+    }
+
+    #searchButton {
+        flex: 0 0 auto;
+        width: auto;
+        min-width: 68px;
+
+        padding: 10px 9px;
+        font-size: 12px;
+        border-radius: 10px;
+        white-space: nowrap;
+    }
+
+    /* QUICK LINKS */
+    .quick-links-section {
+        width: 100%;
+        max-width: 100%;
+        margin: 8px 0 15px;
+        padding: 0 8px;
+    }
+
+    .quick-links {
+        width: 100%;
+        max-width: 100%;
+
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: stretch;
+
+        gap: 6px;
+    }
+
+    .quick-link {
+        flex: 1 1 0;
+        width: 0;
+        min-width: 0;
+        max-width: none;
+
+        height: 62px;
+        min-height: 62px;
+
+        padding: 6px 2px;
+        border-radius: 12px;
+        gap: 5px;
+    }
+
+    .quick-link-icon {
+        width: 27px;
+        height: 27px;
+        border-radius: 8px;
+        font-size: 12px;
+    }
+
+    .quick-link > span:last-child {
+        max-width: 100%;
+        font-size: 9px;
+        line-height: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* RESULTS */
+    .results-area,
+    .answer-panel,
+    .recent-searches {
+        width: 100%;
+        max-width: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .result {
+        width: 100%;
+        max-width: 100%;
+        padding: 14px;
+        border-radius: 13px;
+    }
+
+    .result-title {
+        font-size: 16px;
+        line-height: 1.35;
+    }
+
+    .snippet {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .website-result {
+        width: calc(100% - 20px);
+        max-width: 100%;
+        padding: 0;
+        margin-top: 15px;
+    }
+}
+
+/* -------------------------
+   SMALL PHONES
+   ------------------------- */
+
+@media (max-width: 380px) {
+
+    nav {
+        padding: 0 9px;
+    }
+
+    .hero {
+        padding-left: 8px;
+        padding-right: 8px;
+        margin-top: 25px;
+    }
+
+    .hero h1 {
+        font-size: 50px;
+    }
+
+    .tagline {
+        font-size: 11px;
+    }
+
+    #searchButton {
+        min-width: 60px;
+        padding: 9px 7px;
+        font-size: 11px;
+    }
+
+    .quick-links-section {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .quick-links {
+        gap: 4px;
+    }
+
+    .quick-link {
+        height: 58px;
+        min-height: 58px;
+    }
+
+    .quick-link-icon {
+        width: 25px;
+        height: 25px;
+    }
+
+    .quick-link > span:last-child {
+        font-size: 8px;
+    }
+}
+
     </style>
 </head>
 
@@ -1036,6 +1575,48 @@
             </div>
 
         </section>
+                <!-- =========================
+             QUICK LINKS
+        ========================== -->
+
+        <section class="quick-links-section">
+
+            <div class="quick-links-panel">
+
+                <div class="quick-links-header">
+                    <div>
+                        <h2>Explore</h2>
+                        <p>Quick access to popular websites</p>
+                    </div>
+                </div>
+
+               <div class="quick-links">
+
+    <a href="https://chatgpt.com" target="_blank" rel="noopener noreferrer" class="quick-link">
+        <span class="quick-link-icon">✦</span>
+        <span>ChatGPT</span>
+    </a>
+
+    <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" class="quick-link">
+        <span class="quick-link-icon">▶</span>
+        <span>YouTube</span>
+    </a>
+
+    <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="quick-link">
+        <span class="quick-link-icon">⌖</span>
+        <span>Maps</span>
+    </a>
+
+    <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" class="quick-link">
+        <span class="quick-link-icon">◎</span>
+        <span>Instagram</span>
+    </a>
+
+</div>
+
+            </div>
+
+        </section>
 
         <section class="recent-searches">
             <div id="recentPanel" class="recent-panel" aria-label="Recent searches">
@@ -1056,6 +1637,17 @@
         >
             <div id="answerCard" class="answer-card"></div>
         </section>
+
+
+        <!-- =========================
+             WEBSITE RESULT
+        ========================== -->
+
+        <section
+            id="websiteResult"
+            class="website-result"
+            aria-live="polite"
+        ></section>
 
 
         <!-- =========================
@@ -1126,11 +1718,232 @@
         const SESSION_KEY =
             "ameja-session-id";
 
+        const WEBSITE_LINKS = [
+            {
+                name: "ChatGPT",
+                icon: "✦",
+                url: "https://chatgpt.com",
+                keywords: ["chatgpt", "chat gpt"]
+            },
+            {
+                name: "YouTube",
+                icon: "▶",
+                url: "https://www.youtube.com",
+                keywords: ["youtube", "youtube.com", "yt"]
+            },
+            {
+                name: "Google",
+                icon: "G",
+                url: "https://www.google.com",
+                keywords: ["google", "google.com"]
+            },
+            {
+                name: "Google Maps",
+                icon: "⌖",
+                url: "https://maps.google.com",
+                keywords: ["google maps", "maps.google.com", "maps"]
+            },
+            {
+                name: "Instagram",
+                icon: "◎",
+                url: "https://www.instagram.com",
+                keywords: ["instagram", "instagram.com", "insta"]
+            },
+            {
+                name: "Facebook",
+                icon: "f",
+                url: "https://www.facebook.com",
+                keywords: ["facebook", "facebook.com", "fb"]
+            },
+            {
+                name: "X",
+                icon: "𝕏",
+                url: "https://x.com",
+                keywords: ["twitter", "twitter.com", "x.com"]
+            },
+            {
+                name: "Reddit",
+                icon: "●",
+                url: "https://www.reddit.com",
+                keywords: ["reddit", "reddit.com"]
+            },
+            {
+                name: "GitHub",
+                icon: "⌘",
+                url: "https://github.com",
+                keywords: ["github", "github.com"]
+            },
+            {
+                name: "LinkedIn",
+                icon: "in",
+                url: "https://www.linkedin.com",
+                keywords: ["linkedin", "linkedin.com"]
+            },
+            {
+                name: "WhatsApp Web",
+                icon: "◉",
+                url: "https://web.whatsapp.com",
+                keywords: ["whatsapp", "whatsapp web"]
+            },
+            {
+                name: "Wikipedia",
+                icon: "W",
+                url: "https://www.wikipedia.org",
+                keywords: ["wikipedia", "wikipedia.org", "wiki"]
+            },
+            {
+                name: "Stack Overflow",
+                icon: "SO",
+                url: "https://stackoverflow.com",
+                keywords: ["stackoverflow", "stack overflow"]
+            },
+            {
+                name: "Python",
+                icon: "Py",
+                url: "https://www.python.org",
+                keywords: ["python", "python.org"]
+            },
+            {
+                name: "Hugging Face",
+                icon: "HF",
+                url: "https://huggingface.co",
+                keywords: ["huggingface", "hugging face", "huggingface.co"]
+            },
+            {
+                name: "Amazon India",
+                icon: "A",
+                url: "https://www.amazon.in",
+                keywords: ["amazon", "amazon.in"]
+            },
+            {
+                name: "Flipkart",
+                icon: "F",
+                url: "https://www.flipkart.com",
+                keywords: ["flipkart", "flipkart.com"]
+            },
+            {
+                name: "Netflix",
+                icon: "N",
+                url: "https://www.netflix.com",
+                keywords: ["netflix", "netflix.com"]
+            }
+        ];
+
+
+        function normalizeWebsiteQuery(query) {
+            return String(query || "")
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, " ");
+        }
+
+
+        function findWebsiteLink(query) {
+
+            const cleanQuery =
+                normalizeWebsiteQuery(query);
+
+            if (!cleanQuery) {
+                return null;
+            }
+
+            return WEBSITE_LINKS.find(
+                function(site) {
+                    return site.keywords.some(
+                        function(keyword) {
+                            const cleanKeyword =
+                                normalizeWebsiteQuery(keyword);
+
+                            if (!cleanKeyword) {
+                                return false;
+                            }
+
+                            if (cleanQuery === cleanKeyword) {
+                                return true;
+                            }
+
+                            return (
+                                cleanQuery.startsWith(
+                                    cleanKeyword + " "
+                                )
+                                || cleanQuery.endsWith(
+                                    " " + cleanKeyword
+                                )
+                                || cleanQuery.includes(
+                                    " " + cleanKeyword + " "
+                                )
+                            );
+                        }
+                    );
+                }
+            ) || null;
+        }
+
+
+        function renderWebsiteResult(site) {
+
+            const container =
+                document.getElementById(
+                    "websiteResult"
+                );
+
+            if (!container) {
+                return;
+            }
+
+            if (!site) {
+                container.innerHTML = "";
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="website-result-card">
+
+                    <div class="website-result-icon">
+                        ${escapeHTML(site.icon)}
+                    </div>
+
+                    <div class="website-result-info">
+
+                        <div class="website-result-label">
+                            Official Website
+                        </div>
+
+                        <div class="website-result-name">
+                            ${escapeHTML(site.name)}
+                        </div>
+
+                        <div class="website-result-url">
+                            ${escapeHTML(site.url)}
+                        </div>
+
+                    </div>
+
+                    <a
+                        class="website-result-open"
+                        href="${escapeHTML(site.url)}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Open
+                    </a>
+
+                </div>
+            `;
+        }
+
+
+        function showWebsiteResult(query) {
+            renderWebsiteResult(
+                findWebsiteLink(query)
+            );
+        }
+
+
         let amejaSessionId =
             localStorage.getItem(
                 SESSION_KEY
             );
-
         if (!amejaSessionId) {
 
             amejaSessionId =
@@ -1423,6 +2236,13 @@
             hideAutocomplete();
             resultsContainer.innerHTML = "";
             status.innerHTML = "";
+
+            const websiteResult =
+                document.getElementById("websiteResult");
+
+            if (websiteResult) {
+                websiteResult.innerHTML = "";
+            }
             answerPanel.style.display = "none";
             answerCard.innerHTML = "";
             loadMoreWrapper.style.display = "none";
@@ -1465,6 +2285,8 @@
             saveRecentSearch(query);
             hideRecentSearches();
 
+            showWebsiteResult(query);
+
             currentQuery = query;
 
             currentOffset = 0;
@@ -1483,7 +2305,7 @@
             hideAutocomplete();
 
 
-            resultsContainer.innerHTML = "";
+            
 
             loadMoreWrapper.style.display = "none";
 
@@ -1553,7 +2375,6 @@
                     data.results,
                     false
                 );
-
 
                 currentOffset +=
                     data.results.length;
